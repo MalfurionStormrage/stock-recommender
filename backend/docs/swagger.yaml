@@ -1,0 +1,183 @@
+basePath: /api/v1
+definitions:
+  models.ErrorResponse:
+    properties:
+      message:
+        description: Mensaje descriptivo del error
+        type: string
+      status:
+        description: Estado de la respuesta, normalmente "error"
+        type: string
+    type: object
+  models.StockItemCreateRequest:
+    properties:
+      action:
+        type: string
+      brokerage:
+        type: string
+      company:
+        type: string
+      next_page:
+        type: string
+      origin:
+        type: string
+      rating_from:
+        type: string
+      rating_to:
+        type: string
+      target_from:
+        type: string
+      target_to:
+        type: string
+      ticker:
+        type: string
+      time:
+        type: string
+    type: object
+  models.SuccessResponse:
+    properties:
+      data:
+        description: Datos retornados por la API
+      status:
+        description: Estado de la respuesta, normalmente "success"
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  description: API REST para manejar datos de stock
+  title: Stock Recommender API
+  version: "1.0"
+paths:
+  /api/v1/stock:
+    get:
+      description: Retorna todos los registros de la tabla stock
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.SuccessResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Obtener todos los registros
+      tags:
+      - Stock
+    post:
+      consumes:
+      - application/json
+      description: Crea un nuevo registro en la base de datos
+      parameters:
+      - description: Datos del nuevo stock
+        in: body
+        name: stock
+        required: true
+        schema:
+          $ref: '#/definitions/models.StockItemCreateRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.SuccessResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Crear nuevo stock
+      tags:
+      - Stock
+  /api/v1/stock/{id}:
+    delete:
+      description: Elimina un registro existente usando su ID
+      parameters:
+      - description: ID del stock a eliminar
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.SuccessResponse'
+        "400":
+          description: ID inválido
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: Error al eliminar el stock
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Eliminar un registro de stock
+      tags:
+      - Stock
+    put:
+      consumes:
+      - application/json
+      description: Actualiza un registro de stock existente por ID
+      parameters:
+      - description: ID del stock a actualizar
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Datos del stock a actualizar
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/models.StockItemCreateRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.SuccessResponse'
+        "400":
+          description: ID inválido o JSON malformado
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: Error al actualizar el stock
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Actualizar un registro existente
+      tags:
+      - Stock
+  /stock/search:
+    get:
+      description: Filtra los registros por ticker o next_page usando el query param
+        "filter"
+      parameters:
+      - description: Valor a buscar en ticker o next_page
+        in: query
+        name: filter
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.SuccessResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Filtrar registros de stock
+      tags:
+      - Stock
+swagger: "2.0"
