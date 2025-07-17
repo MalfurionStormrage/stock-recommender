@@ -52,6 +52,7 @@ stock-recommender/
 │   │   ├── styles/            # Estilos globales
 │   │   └── types/             # Tipado TypeScript
 │   └── public/                # Archivos estáticos
+│   └── terraform/             # Infraestructura como código
 ```
 
 ---
